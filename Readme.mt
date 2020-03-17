@@ -11,3 +11,10 @@ udo chown pawel -R /opt/hfs18.0.287/python/
 
 /opt/hfs18.0.287/python/bin/python setup.py configure --hdf5-version=1.8.11 --hdf5=/home/pawel/git/hdf5-1.8.11-linux-x86_64-shared
 /opt/hfs18.0.287/python/bin/python setup.py install
+
+https://www.google.com/maps/@35.685,139.7514,14z
+https://simplemaps.com/data/world-cities
+https://www.openstreetmap.org/#map=14/35.6850/139.7407&layers=H
+
+Convert:
+tensorflowjs_converter  --input_format keras ~/git/3dml/4_plane/models/model_all_points_5 model_all_points_5_js

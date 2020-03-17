@@ -1,0 +1,4 @@
+/backup/
+*.project
+/.idea/
+*.hipnc

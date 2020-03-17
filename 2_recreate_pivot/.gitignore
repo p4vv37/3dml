@@ -1,0 +1,9 @@
+/data/
+/.ipynb_checkpoints/
+/backup/
+/chair.blend
+/chair.blend1
+/chair.mtl
+/chair.obj
+*.hipnc
+*.db
