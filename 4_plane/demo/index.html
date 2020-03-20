@@ -4,200 +4,112 @@
     <meta charset="UTF-8" />
     <title>Orbital Camera Controls Demo</title>
     <style>
-        button {
-        z-index: 265
+      button {
+        z-index: 265;
         /* Other CSS stuffs you want */
-        }
+      }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/108/three.js"></script>
     <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
-    <script type='text/javascript' src='dat.gui/dat.gui.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+    <script type="text/javascript" src="dat.gui/dat.gui.min.js"></script>
+    <script src="js/tf_utils.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/plane.js"></script>
+    <script src="js/scene.js"></script>
   </head>
   <body>
     <script type="text/javascript">
 
-        var FizzyText = function() {
-            this.message = 'dat.gui';
-            this.speed = 0.8;
-            this.displayOutline = false;
-            this.explode = function() { };
-        };
-
-        window.onload = function() {
-            var text = new FizzyText();
-            var gui = new dat.GUI();
-            gui.add(text, 'message');
-            gui.add(text, 'speed', -5, 5);
-            gui.add(text, 'displayOutline');
-            gui.add(text, 'explode');
-        };
-    
-
-        var simulationFPS = 25.0;
-
-        var frameTime = 1000/simulationFPS;
-
-      // Create a scene which will hold all our meshes to be rendered
-      var scene = new THREE.Scene();
-
-      // Create and position a camera
-      var camera = new THREE.PerspectiveCamera(
-        60, // Field of view
-        window.innerWidth / window.innerHeight, // Aspect ratio
-        0.1, // Near clipping pane
-        1000 // Far clipping pane
-      );
-
-      // Reposition the camera
-      camera.position.set(5, 5, 0);
-
-      // Point the camera at a given coordinate
-      camera.lookAt(new THREE.Vector3(0, 0, 0));
-
-      // Create a renderer
-      var renderer = new THREE.WebGLRenderer({ antialias: true });
-
-      // Size should be the same as the window
-      renderer.setSize(window.innerWidth, window.innerHeight);
-
-      // Set a near white clear color (default is black)
-      renderer.setClearColor(0xfff6e6);
-
-      // Append to the document
-      document.body.appendChild(renderer.domElement);
-
-      // A mesh is created from the geometry and material, then added to the scene
-      var grid = new THREE.Mesh(
-        new THREE.PlaneGeometry(5, 5, 5, 5),
-        new THREE.MeshBasicMaterial({ color: 0x393839, wireframe: true })
-      );
-      grid.rotateX(Math.PI / 2);
-      scene.add(grid);
-
-      var material = new THREE.MeshStandardMaterial({
-        color: 0xff0051,
-        shading: THREE.FlatShading, // default is THREE.SmoothShading
-        metalness: 0,
-        roughness: 1
-      });
-
-      var Plane = function() {
-        // Run the Group constructor with the given arguments
-        THREE.Group.apply(this, arguments);
-        this.rotationSpeed = Math.random() * 0.02 + 0.005;
-        this.rotationPosition = Math.random();
-
-        h = 1.3;
-        var pts = [
-            0.0, 0.053722500801086426, -0.10000000149011612, 
-            0.0, 0.053722500801086426, -0.008631999604403973, 
-            -0.29947200417518616, 0.053722500801086426, 0.0, 
-            0.2003210037946701, h, 0.0, 
-            0.0, 0.053722500801086426, 0.008631999604403973, 
-            0.0, 0.053722500801086426, 0.10000000149011612
-        ]
-
-    //     start_frames = list()
-    // for i in range(sample_length):
-    //     start_frames.append(start_pos + i * np.asarray([0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
-    
-    //     batch = deque(start_frames, sample_length)
-    //     out = [i[:3 * num_verts] for i in batch]
-
-        for (i = 0; i < 6; i++) {
-            if ( i == 3 )
-            {
-                continue;
-            }
-            pts[i*3] += pts[3*3];
-            pts[i*3 + 1] += pts[3*3 + 1];
-            pts[i*3 + 2] += pts[3*3 + 2];
-        } 
-
-        var geom = new THREE.Geometry(); 
-
-        var v1 = new THREE.Vector3(pts[0], pts[1], pts[2]);
-        var v2 = new THREE.Vector3(pts[3], pts[4], pts[5]);
-        var v3 = new THREE.Vector3(pts[6], pts[7], pts[8]);
-        var v4 = new THREE.Vector3(pts[9], pts[10], pts[11]);
-        var v5 = new THREE.Vector3(pts[12], pts[13], pts[14]);
-        var v6 = new THREE.Vector3(pts[15], pts[16], pts[17]);
-
-        geom.vertices.push(v1);
-        geom.vertices.push(v2);
-        geom.vertices.push(v3);
-        geom.vertices.push(v4);
-        geom.vertices.push(v5);
-        geom.vertices.push(v6);
-
-        geom.faces.push( new THREE.Face3( 4, 5, 2 ) );
-        geom.faces.push( new THREE.Face3( 0, 1, 2 ) );
-        geom.faces.push( new THREE.Face3( 2, 3, 4 ) );
-        geom.faces.push( new THREE.Face3( 1, 3, 2 ) );
-
-        // The main bauble is an Octahedron
-        var paper = new THREE.Mesh(
-            geom,
-          new THREE.MeshBasicMaterial( {color: "#47689b", shading: THREE.FlatShading, side: THREE.DoubleSide, wireframe: true} )
-        );
-        this.add(paper);
-      };
-
-      Plane.prototype = Object.create(THREE.Group.prototype);
-      Plane.prototype.constructor = Plane;
-      var plane = new Plane(material);
-      plane.position.y += 10;
-      scene.add(plane);
-
-      var ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
-      scene.add(ambientLight);
-      var pointLight = new THREE.PointLight(0xffffff, 1);
-      pointLight.position.set(25, 50, 25);
-      scene.add(pointLight);
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-      pointLight.castShadow = true;
-      pointLight.shadow.mapSize.width = 1024;
-      pointLight.shadow.mapSize.height = 1024;
-
-      plane.castShadow = true;
-      plane.receiveShadow = true;
-      grid.receiveShadow = true;
-      var shadowMaterial = new THREE.ShadowMaterial({ color: 0xeeeeee });
-      shadowMaterial.opacity = 0.5;
-      Plane.prototype.updatePosition = function() {
-        this.rotationPosition += this.rotationSpeed;
-        this.rotation.y = Math.sin(this.rotationPosition);
-      };
-
-      renderer.render(scene, camera);
-      // Add an orbit control which allows us to move around the scene. See the three.js example for more details
-      // https://github.com/mrdoob/three.js/blob/dev/examples/js/controls/OrbitControls.
-      var controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.target = new THREE.Vector3(0, 15, 0);
-      controls.maxPolarAngle = Math.PI / 2;
-
-      requestAnimationFrame(render);
-
-      var Now = new Date(); 
-      t = Now.getTime();
-
-      function render() {
-        controls.update();
-        Now = new Date(); 
+        var data = new simData();
+        var gui = new dat.GUI();
+        gui.add(data, "startHeight", 0, 1.5);
+        gui.add(data, "windStart", 0, 100);
+        gui.add(data, "windLength", 0, 100);
+        gui.add(data, "sampleLength", [1, 3, 5, 7, 11]);
+        gui.add(data, "pause", false);
+        gui.add(data, "nextFrame");
+        gui.add(data, "apply");
         
-        if (Now.getTime() - t > frameTime)
-        {
-            t = Now.getTime();
-            plane.updatePosition();
-        }
+        load_model(data.sampleLength)
 
-        // Render the scene/camera combnation
-        renderer.render(scene, camera);
+        const simulationFPS = 25.0;
+        const frameTime = 1000 / simulationFPS;
+        
+        var renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0xfff6e6);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-        // Repeat
+        var controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.target = new THREE.Vector3(0, 2, 0);
+        controls.maxPolarAngle = Math.PI / 2;
+        
+        document.body.appendChild(renderer.domElement);
+
+        var plane = new Plane(data);
+        scene.add(plane);
+        
+        plane.reset();
+        data.plane = plane;
         requestAnimationFrame(render);
-      }
+        
+        var Now = new Date();
+        t = Now.getTime();
+        
+        var dir = new THREE.Vector3( 0, 0, 1 );
+        dir.normalize();
+        var origin = new THREE.Vector3( 0, 1, 0 );
+        var length = 0.001;
+        var arrowHelper1 = new THREE.ArrowHelper( dir, origin, length, 'blue' );
+        scene.add( arrowHelper1 );
+        origin = new THREE.Vector3( 0, 1.5, 0 );
+        var arrowHelper2 = new THREE.ArrowHelper( dir, origin, length, 'blue' );
+        scene.add( arrowHelper2 );
+        origin = new THREE.Vector3( 0.5, 1.25, 0 );
+        var arrowHelper3 = new THREE.ArrowHelper( dir, origin, length, 'blue' );
+        scene.add( arrowHelper3 );
+        origin = new THREE.Vector3( 0.5, 1.75, 0 );
+        var arrowHelper4 = new THREE.ArrowHelper( dir, origin, length, 'blue' );
+        scene.add( arrowHelper4 );
+
+        function render() {
+          controls.update();
+
+          Now = new Date();
+          if (Now.getTime() - t > frameTime) {
+            t = Now.getTime();
+            if ((!data.pause || data.playNextFrame) && window.model !== null)
+            {
+                data.playNextFrame = false;
+                pts = plane.getPts();
+                if (plane.cache.length < data.sampleLength )
+                {
+                    pts[9] -= 0.2;
+                } else {
+                    pts = Array.from(window.model.predict(tf.tensor([plane.cache])).dataSync());    
+                    var is_wind = (data.windStart < plane.frame) && (plane.frame < data.windStart + data.windLength);
+                    if (is_wind){
+                        arrowHelper1.setLength(1);
+                        arrowHelper2.setLength(1);
+                        arrowHelper3.setLength(1);
+                        arrowHelper4.setLength(1);
+                    } else {
+                        arrowHelper1.setLength(0.001);
+                        arrowHelper2.setLength(0.001);
+                        arrowHelper3.setLength(0.001);
+                        arrowHelper4.setLength(0.001);
+                    }
+                }     
+                plane.setPts(pts);
+            }
+          }
+        
+          renderer.render(scene, camera);
+          requestAnimationFrame(render);
+        }
+        
     </script>
   </body>
 </html>
