@@ -1,5 +1,6 @@
 # Paper plane flight simulation by RNN
 [Details](plane.ipynb)
+[In Browser demo](http://www.pkowalski.com/demo)
 
 Simple physics simulation: Recurrent Neural Network predicts a flight of a plane and takes a blowing wind int an account.
 There are 3 versions of the network that predict:
@@ -32,7 +33,7 @@ The network did manage to learn how wind or hitting the ground affect the shape 
 * Use `plane.ipynb` to train models.
 
 ## In-Browser demonstration
-A demonstration of networks that predict positions of key vertices position is available on [pkowalski.com/demo](www.pkowalski.com/demo)
+A demonstration of networks that predict positions of key vertices position is available on [http://www.pkowalski.com/demo](http://www.pkowalski.com/demo)
 
 ![Preview of demo](img/prev.gif)
 
