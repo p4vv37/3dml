@@ -2,3 +2,6 @@
 *.project
 /.idea/
 *.hipnc
+
+1_recognise_images/geo/
+/.history/
