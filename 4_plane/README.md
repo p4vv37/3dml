@@ -4,9 +4,9 @@ There are 3 versions of the network that predict:
 * a position of a plane (1 point)
 * a position of few key vertices of a plane (6 points)
 * a position of every vertex of an original plane model (14 points)
-![Example](/img/3.gif)
-![Example](/img/2.gif)
-![Example](/img/1.gif)
+![Example](img/3.gif)
+![Example](img/2.gif)
+![Example](img/1.gif)
 
 Networks ware trained with different lengths of samples, that is number of keframes used to create a predictin on next one. 1, 3, 5, 7 9 or 11 frames ware used.
 
