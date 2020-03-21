@@ -19,7 +19,7 @@ The network did manage lo learn how wind or hitting the ground affect a shape of
 ![Example](img/prev_wings.gif)
 
 ## .hip file
-![Preview of demo](img/hip.gif)
+![Preview of demo](img/hip.png)
 
 * A plane simulation is generated in `/obj/generate_data` geometry node
 
