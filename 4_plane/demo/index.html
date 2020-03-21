@@ -3,12 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <title>Orbital Camera Controls Demo</title>
-    <style>
-      button {
-        z-index: 265;
-        /* Other CSS stuffs you want */
-      }
-    </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/108/three.js"></script>
     <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
@@ -17,9 +11,14 @@
     <script src="js/ui.js"></script>
     <script src="js/plane.js"></script>
     <script src="js/scene.js"></script>
+    <script src="js/stats.min.js"></script>
   </head>
   <body>
     <script type="text/javascript">
+
+        var stats = new Stats();
+        stats.showPanel( 1 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+        document.body.appendChild( stats.dom );
 
         var data = new simData();
         var gui = new dat.GUI();
@@ -60,19 +59,25 @@
         
         var dir = new THREE.Vector3( 0, 0, 1 );
         dir.normalize();
-        var origin = new THREE.Vector3( 0, 1, 0 );
         var length = 0.001;
-        var arrowHelper1 = new THREE.ArrowHelper( dir, origin, length, 'blue' );
+        var origin = new THREE.Vector3( 0, 1, 0 );
+        var arrowHelper1 = new THREE.ArrowHelper( dir, origin, length, 'red' );
         scene.add( arrowHelper1 );
         origin = new THREE.Vector3( 0, 1.5, 0 );
-        var arrowHelper2 = new THREE.ArrowHelper( dir, origin, length, 'blue' );
+        var arrowHelper2 = new THREE.ArrowHelper( dir, origin, length, 'red' );
         scene.add( arrowHelper2 );
-        origin = new THREE.Vector3( 0.5, 1.25, 0 );
-        var arrowHelper3 = new THREE.ArrowHelper( dir, origin, length, 'blue' );
+        origin = new THREE.Vector3( -2, 1, 0 );
+        var arrowHelper3 = new THREE.ArrowHelper( dir, origin, length, 'red' );
         scene.add( arrowHelper3 );
-        origin = new THREE.Vector3( 0.5, 1.75, 0 );
-        var arrowHelper4 = new THREE.ArrowHelper( dir, origin, length, 'blue' );
+        origin = new THREE.Vector3( -2, 1.5, 0 );
+        var arrowHelper4 = new THREE.ArrowHelper( dir, origin, length, 'red' );
         scene.add( arrowHelper4 );
+        origin = new THREE.Vector3( -4, 1, 0 );
+        var arrowHelper5 = new THREE.ArrowHelper( dir, origin, length, 'red' );
+        scene.add( arrowHelper5 );
+        origin = new THREE.Vector3( -4, 1.5, 0 );
+        var arrowHelper6 = new THREE.ArrowHelper( dir, origin, length, 'red' );
+        scene.add( arrowHelper6 );
 
         function render() {
           controls.update();
@@ -86,20 +91,28 @@
                 pts = plane.getPts();
                 if (plane.cache.length < data.sampleLength )
                 {
+                    stats.begin();
                     pts[9] -= 0.2;
+	                  stats.end();
                 } else {
+                    stats.begin();
                     pts = Array.from(window.model.predict(tf.tensor([plane.cache])).dataSync());    
+	                  stats.end();
                     var is_wind = (data.windStart < plane.frame) && (plane.frame < data.windStart + data.windLength);
                     if (is_wind){
                         arrowHelper1.setLength(1);
                         arrowHelper2.setLength(1);
                         arrowHelper3.setLength(1);
                         arrowHelper4.setLength(1);
+                        arrowHelper5.setLength(1);
+                        arrowHelper6.setLength(1);
                     } else {
                         arrowHelper1.setLength(0.001);
                         arrowHelper2.setLength(0.001);
                         arrowHelper3.setLength(0.001);
                         arrowHelper4.setLength(0.001);
+                        arrowHelper5.setLength(0.001);
+                        arrowHelper6.setLength(0.001);
                     }
                 }     
                 plane.setPts(pts);
@@ -109,7 +122,8 @@
           renderer.render(scene, camera);
           requestAnimationFrame(render);
         }
-        
+
+        requestAnimationFrame( animate );
     </script>
   </body>
 </html>

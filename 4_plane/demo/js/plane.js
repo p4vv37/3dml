@@ -4,13 +4,6 @@ var Plane = function(data) {
   this.rotationSpeed = Math.random() * 0.02 + 0.005;
   this.rotationPosition = Math.random();
 
-  //     start_frames = list()
-  // for i in range(sample_length):
-  //     start_frames.append(start_pos + i * np.asarray([0, 0, 0, 0, 0, 0, 0, 0, 0, -0.2, 0, 0, 0, 0, 0, 0, 0, 0, 0]))
-
-  //     batch = deque(start_frames, sample_length)
-  //     out = [i[:3 * num_verts] for i in batch]
-
   this.geom = new THREE.Geometry();
 
   var v1 = new THREE.Vector3(0, 0, 0);
