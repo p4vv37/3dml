@@ -1,4 +1,6 @@
 # Paper plane flight simulation by RNN
+[Details](plane.ipynb)
+
 Simple physics simulation: Recurrent Neural Network predicts a flight of a plane and takes a blowing wind int an account.
 There are 3 versions of the network that predict:
 * a position of a plane (1 point)
