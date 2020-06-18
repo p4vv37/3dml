@@ -20,7 +20,7 @@ def add_discriminator_block(old_model, n_input_layers=3, filters=128, gpus=1):
     # get shape of existing model
     in_shape = list(old_model.input.shape)
     # define new input shape as double the size
-    input_shape = (in_shape[-2].value * 2, in_shape[-2].value * 2, in_shape[-1])
+    input_shape = (in_shape[-2] * 2, in_shape[-2] * 2, in_shape[-1])
     in_image = Input(shape=input_shape)
     # define new input processing layer
     d = EqualizedConv2D(filters, (1, 1), padding='same', kernel_initializer=init, kernel_constraint=const)(in_image)
