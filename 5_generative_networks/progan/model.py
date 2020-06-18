@@ -11,7 +11,7 @@ from .config import PARAMETERS
 from .layers import PixelNormalization, WeightedSum, MinibatchStdev, EqualizedConv2D
 from .misc import wasserstein_loss
 
-def add_discriminator_block(old_model, n_input_layers=3, filters=128):
+def add_discriminator_block(old_model, n_input_layers=3, filters=128, gpus=1):
     # weight initialization
     init = RandomNormal(stddev=1.0)
     # weight constraint
@@ -35,7 +35,14 @@ def add_discriminator_block(old_model, n_input_layers=3, filters=128):
     for i in range(n_input_layers, len(old_model.layers)):
         d = old_model.layers[i](d)
     # define straight-through model
-    model1 = Model(in_image, d)
+
+    if gpus <= 1:
+        print("[INFO] training with 1 GPU...")
+        model1 = Model(in_image, d)
+    else:
+        with device("/cpu:0"):
+            model = Model(in_image, d)
+        model1 = multi_gpu_model(model, gpus=gpus)
     # compile model
     model1.compile(loss=wasserstein_loss, optimizer=Adam(lr=PARAMETERS.learning_rate,
                                                          beta_1=PARAMETERS.adam_beta1,
@@ -52,7 +59,13 @@ def add_discriminator_block(old_model, n_input_layers=3, filters=128):
     for i in range(n_input_layers, len(old_model.layers)):
         d = old_model.layers[i](d)
     # define straight-through model
-    model2 = Model(in_image, d)
+    if gpus <= 1:
+        print("[INFO] training with 1 GPU...")
+        model2 = Model(in_image, d)
+    else:
+        with device("/cpu:0"):
+            model = Model(in_image, d)
+        model2 = multi_gpu_model(model, gpus=gpus)
     # compile model
     model2.compile(loss=wasserstein_loss, optimizer=Adam(lr=PARAMETERS.learning_rate,
                                                          beta_1=PARAMETERS.adam_beta1,
