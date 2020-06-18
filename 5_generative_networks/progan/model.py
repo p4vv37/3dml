@@ -11,6 +11,7 @@ from .config import PARAMETERS
 from .layers import PixelNormalization, WeightedSum, MinibatchStdev, EqualizedConv2D
 from .misc import wasserstein_loss
 
+
 def add_discriminator_block(old_model, n_input_layers=3, filters=128, gpus=1):
     # weight initialization
     init = RandomNormal(stddev=1.0)
