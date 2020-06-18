@@ -8,6 +8,7 @@ from .config import PARAMETERS
 
 def main(runs=1, gpus=1):
     print(F"-------------\n\n\nGPU:{tf.test.is_gpu_available(cuda_only=True)}\n\n\n-------------")
+    print(F"Num GPUs: {gpus}")
 
     # number of growth phases, e.g. 6 == [4, 8, 16, 32, 64, 128]
     n_blocks = 7
