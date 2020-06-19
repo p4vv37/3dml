@@ -110,20 +110,18 @@ class WeightedSum(Add):
 
 class EqualizedConv2D(Conv2D):
     def __init__(self, filters, kernel, *args, **kwargs):
-        self.he_constant = None
+        self.scale = 1.0
         super(EqualizedConv2D, self).__init__(filters, kernel, *args, **kwargs)
 
     def build(self, input_shape):
+        fan_in = np.prod(input_shape[1:])
+        self.scale = np.sqrt(2/fan_in)
         return super(EqualizedConv2D, self).build(input_shape)
 
     def call(self, inputs):
-        if self.he_constant is None:
-            self.he_constant = tf.sqrt(
-                x=2. / tf.size(input=self.kernel, out_type=tf.float32)
-            )
         outputs = backend.conv2d(
             inputs,
-            self.kernel*self.he_constant,
+            self.kernel*self.scale,
             strides=self.strides,
             padding=self.padding,
             data_format=self.data_format,
