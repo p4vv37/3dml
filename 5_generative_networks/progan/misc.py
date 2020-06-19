@@ -25,8 +25,7 @@ def summarize_performance(status, g_model, latent_dim, n_samples=25, save_models
     for i in range(n_samples):
         pyplot.subplot(square, square, 1 + i)
         pyplot.axis('off')
-        x = np.clip(X[i], 0, 1)
-        pyplot.imshow(x)
+        pyplot.imshow(X[i])
     # save plot to file
     filename1 = 'plot_%s.png' % (name)
     pyplot.savefig(filename1)

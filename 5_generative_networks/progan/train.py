@@ -1,4 +1,5 @@
 import numpy as np
+import time
 
 from .misc import generate_fake_samples, generate_latent_points, update_fadein, \
     summarize_performance, show_images
@@ -13,6 +14,7 @@ def train_epochs(g_model, d_model, gan_model, dataset, n_epochs, n_batch, latent
     # calculate the size of half a batch of samples
     half_batch = int(n_batch / 2)
     # manually enumerate epochs
+    t0 =time.time()
     for i in range(n_steps):
         # update alpha for all WeightedSum layers when fading in new blocks
         if fadein:
@@ -34,6 +36,10 @@ def train_epochs(g_model, d_model, gan_model, dataset, n_epochs, n_batch, latent
         g_loss = gan_model.train_on_batch(z_input, y_real2)
         # summarize loss on this batch
         print(F'\r>{i + 1}/{n_steps}, d1=%.3f, d2=%.3f g=%.3f' % (d_loss1, d_loss2, g_loss), end="")
+        if time.time() - t0 > 30:
+            # save preview of images every 30 s.
+            t0 = time.time()
+            summarize_performance('fresh_batch_preview', g_model, latent_dim, save_models=False)
     print("")
 
 
@@ -50,7 +56,7 @@ def train(g_models, d_models, gan_models, dataset_dir, latent_dim, e_norm, e_fad
     summarize_performance('tuned', g_normal, latent_dim)
 
     latent_for_prev = generate_latent_points(latent_dim, 4)
-    show_images(g_normal.predict_on_batch(latent_for_prev), suffix=0)
+    show_images(g_normal.predict(latent_for_prev), suffix=0)
 
     # process each level of growth
     for i in range(1, len(g_models)):
@@ -68,4 +74,4 @@ def train(g_models, d_models, gan_models, dataset_dir, latent_dim, e_norm, e_fad
         # train normal or straight-through models
         train_epochs(g_normal, d_normal, gan_normal, dataset, e_norm[i], n_batch[i], latent_dim)
         summarize_performance('tuned', g_normal, latent_dim)
-        show_images(g_normal.predict_on_batch(latent_for_prev), suffix=i)
+        show_images(g_normal.predict(latent_for_prev), suffix=i)
