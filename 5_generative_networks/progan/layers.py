@@ -3,6 +3,8 @@ from keras import backend
 from keras.layers import Add, Conv2D
 from keras.layers import Layer
 
+import tensorflow as tf
+
 
 # pixel-wise feature vector normalization layer
 class PixelNormalization(Layer):
@@ -106,19 +108,20 @@ class WeightedSum(Add):
 
 
 class EqualizedConv2D(Conv2D):
-    """   Based on https://github.com/MSC-BUAA/Keras-progressive_growing_of_gans/issues/4   """
-    def __init__(self, *args, **kwargs):
-        self.scale = 1
-        super(EqualizedConv2D, self).__init__(*args, **kwargs)
+    def __init__(self, filters, kernel, *args, **kwargs):
+        self.scale = None
+        super(EqualizedConv2D, self).__init__(filters, kernel, *args, **kwargs)
 
     def build(self, input_shape):
-        super().build(input_shape)
-        kernel_shape = backend.int_shape(self.kernel)
-        std = np.sqrt(2) / np.sqrt(np.prod(kernel_shape[:-1]))
-        self.scale = backend.constant(std, dtype=backend.floatx())
+        # fan_in = np.prod(input_shape[1:])
+        # self.scale = np.sqrt(fan_in/2)
+        # self.scale **= 0.1
+        # print(self.scale)
+        return super(EqualizedConv2D, self).build(input_shape)
 
-    def call(self, inputs, **kwargs):
-        k = self.kernel
-        self.kernel = self.kernel * self.scale
-        x = super().call(inputs)
-        return x
+    def call(self, inputs):
+        he_constant = tf.sqrt(
+            x=2. / tf.size(input=self.kernel, out_type=tf.float32)
+        )
+        self.kernel = self.kernel * he_constant
+        return super(EqualizedConv2D, self).call(inputs)
