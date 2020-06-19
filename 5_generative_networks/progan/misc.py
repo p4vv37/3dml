@@ -12,7 +12,7 @@ def deprocess(x):
 
 
 # generate samples and save as a plot and save the model
-def summarize_performance(status, g_model, latent_dim, n_samples=25):
+def summarize_performance(status, g_model, latent_dim, n_samples=25, save_models=True):
     # devise name
     gen_shape = g_model.output_shape
     name = '%03dx%03d-%s' % (gen_shape[1], gen_shape[2], status)
@@ -25,15 +25,17 @@ def summarize_performance(status, g_model, latent_dim, n_samples=25):
     for i in range(n_samples):
         pyplot.subplot(square, square, 1 + i)
         pyplot.axis('off')
-        pyplot.imshow(X[i])
+        x = np.clip(X[i], 0, 1)
+        pyplot.imshow(x)
     # save plot to file
     filename1 = 'plot_%s.png' % (name)
     pyplot.savefig(filename1)
     pyplot.close()
-    # save the generator model
-    filename2 = 'model_%s.h5' % (name)
-    g_model.save(F"models/{filename2}")
-    print('>Saved: %s and %s' % (filename1, filename2))
+    if save_models:
+        # save the generator model
+        filename2 = 'model_%s.h5' % (name)
+        g_model.save(F"models/{filename2}")
+        print('>Saved: %s and %s' % (filename1, filename2))
 
 
 # generate points in latent space as input for the generator

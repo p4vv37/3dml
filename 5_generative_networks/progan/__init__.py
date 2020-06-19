@@ -1,12 +1,13 @@
 import os
+
 import tensorflow as tf
 
+from .config import PARAMETERS
 from .model import define_discriminator, define_generator, define_composite
 from .train import train
-from .config import PARAMETERS
 
 
-def main(runs=1, gpus=1):
+def main(runs=1, gpus=1, dataset_name=None):
     print(F"-------------\n\n\nGPU:{tf.test.is_gpu_available(cuda_only=True)}\n\n\n-------------")
     print(F"Num GPUs: {gpus}")
 
@@ -21,11 +22,17 @@ def main(runs=1, gpus=1):
     # define composite models
     gan_models = define_composite(d_models, g_models, gpus=gpus)
     # load image data
-    # data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "All-Age-Faces Dataset")
-    data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "AF_dataset", "data")
+    if dataset_name is None:
+        data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "all_age_faces_dataset")
+    elif dataset_name == "af":
+        data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "AF_dataset", "data")
+    elif dataset_name == "faces":
+        data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "all_age_faces_dataset")
+    else:
+        raise ValueError(F"Unknown dataset_name {dataset_name}")
     for r in range(runs):
         train(g_models, d_models, gan_models, data_dir, latent_dim,
-          PARAMETERS.n_epochs, PARAMETERS.n_epochs, PARAMETERS.n_batch)
+              PARAMETERS.n_epochs, PARAMETERS.n_epochs, PARAMETERS.n_batch)
 
 
 if __name__ == "__main__":
