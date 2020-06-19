@@ -28,6 +28,8 @@ def main(runs=1, gpus=1, dataset_name=None):
         data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "AF_dataset", "data")
     elif dataset_name == "faces":
         data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "all_age_faces_dataset")
+    elif dataset_name == "flowers":
+        data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "flowers")
     else:
         raise ValueError(F"Unknown dataset_name {dataset_name}")
     for r in range(runs):
