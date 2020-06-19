@@ -120,6 +120,9 @@ class EqualizedConv2D(Conv2D):
         if self.he_constant is None:
             self.he_constant = tf.sqrt(
                 x=2. / tf.size(input=self.kernel, out_type=tf.float32)
-            )**0.1
-        self.kernel = self.kernel * self.he_constant
-        return super(EqualizedConv2D, self).call(inputs)
+            )
+        kernel = self.kernel
+        self.kernel = kernel * self.he_constant
+        result = super(EqualizedConv2D, self).call(inputs)
+        self.kernel = kernel
+        return result
