@@ -114,7 +114,7 @@ class EqualizedConv2D(Conv2D):
         fan_in = np.prod(input_shape[1:])
         self.scale = np.sqrt(fan_in/2)
         self.scale **= 0.2
-        print(self.scale)
+        # print(self.scale)
         return super(EqualizedConv2D, self).build(input_shape)
 
     def call(self, inputs):

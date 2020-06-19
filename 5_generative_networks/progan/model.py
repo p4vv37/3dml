@@ -38,7 +38,7 @@ def add_discriminator_block(old_model, n_input_layers=3, filters=128, gpus=1):
     # define straight-through model
 
     if gpus <= 1:
-        print("[INFO] training with 1 GPU...")
+        # print("[INFO] training with 1 GPU...")
         model1 = Model(in_image, d)
     else:
         with device("/cpu:0"):
@@ -61,7 +61,7 @@ def add_discriminator_block(old_model, n_input_layers=3, filters=128, gpus=1):
         d = old_model.layers[i](d)
     # define straight-through model
     if gpus <= 1:
-        print("[INFO] training with 1 GPU...")
+        # print("[INFO] training with 1 GPU...")
         model2 = Model(in_image, d)
     else:
         with device("/cpu:0"):
@@ -99,7 +99,7 @@ def define_discriminator(n_blocks, input_shape=(4, 4, 3), gpus=1):
     out_class = Dense(1)(d)
     # define model
     if gpus <= 1:
-        print("[INFO] training with 1 GPU...")
+        # print("[INFO] training with 1 GPU...")
         model = Model(in_image, out_class)
     else:
         with device("/cpu:0"):
@@ -148,7 +148,7 @@ def add_generator_block(old_model, filters=256, gpus=1):
     out_image = EqualizedConv2D(3, (1, 1), padding='same', kernel_initializer=init, kernel_constraint=const)(g)
     # define model
     if gpus <= 1:
-        print("[INFO] training with 1 GPU...")
+        # print("[INFO] training with 1 GPU...")
         model1 = Model(old_model.input, out_image)
     else:
         with device("/cpu:0"):
@@ -162,7 +162,7 @@ def add_generator_block(old_model, filters=256, gpus=1):
     merged = WeightedSum()([out_image2, out_image])
     # define model
     if gpus <= 1:
-        print("[INFO] training with 1 GPU...")
+        # print("[INFO] training with 1 GPU...")
         model2 = Model(old_model.input, merged)
     else:
         with device("/cpu:0"):
@@ -196,7 +196,7 @@ def define_generator(latent_dim, n_blocks, in_dim=4, gpus=1):
     out_image = EqualizedConv2D(3, (1, 1), padding='same', kernel_initializer=init, kernel_constraint=const)(g)
     # define model
     if gpus <= 1:
-        print("[INFO] training with 1 GPU...")
+        # print("[INFO] training with 1 GPU...")
         model = Model(in_latent, out_image)
     else:
         with device("/cpu:0"):
@@ -230,7 +230,7 @@ def define_composite(discriminators, generators, gpus=1):
         d_models[0].trainable = False
 
         if gpus <= 1:
-            print("[INFO] training with 1 GPU...")
+            # print("[INFO] training with 1 GPU...")
             model1 = Sequential()
         else:
             with device("/cpu:0"):
@@ -246,7 +246,7 @@ def define_composite(discriminators, generators, gpus=1):
         d_models[1].trainable = False
 
         if gpus <= 1:
-            print("[INFO] training with 1 GPU...")
+            # print("[INFO] training with 1 GPU...")
             model2 = Sequential()
         else:
             with device("/cpu:0"):
