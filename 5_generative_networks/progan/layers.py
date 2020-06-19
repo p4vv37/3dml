@@ -94,6 +94,7 @@ class AddBiasLayer(Layer):
 class WeightedSum(Add):
     # init with default value
     def __init__(self, alpha=0.0, **kwargs):
+        self.he_constant = None
         super(WeightedSum, self).__init__(**kwargs)
         self.alpha = backend.variable(alpha, name='ws_alpha')
 
@@ -109,19 +110,16 @@ class WeightedSum(Add):
 
 class EqualizedConv2D(Conv2D):
     def __init__(self, filters, kernel, *args, **kwargs):
-        self.scale = None
+        self.he_constant = None
         super(EqualizedConv2D, self).__init__(filters, kernel, *args, **kwargs)
 
     def build(self, input_shape):
-        # fan_in = np.prod(input_shape[1:])
-        # self.scale = np.sqrt(fan_in/2)
-        # self.scale **= 0.1
-        # print(self.scale)
         return super(EqualizedConv2D, self).build(input_shape)
 
     def call(self, inputs):
-        he_constant = tf.sqrt(
-            x=2. / tf.size(input=self.kernel, out_type=tf.float32)
-        )
-        self.kernel = self.kernel * he_constant
+        if self.he_constant is None:
+            self.he_constant = tf.sqrt(
+                x=2. / tf.size(input=self.kernel, out_type=tf.float32)
+            )**0.1
+        self.kernel = self.kernel * self.he_constant
         return super(EqualizedConv2D, self).call(inputs)
