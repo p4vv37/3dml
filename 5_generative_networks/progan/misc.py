@@ -19,7 +19,7 @@ def summarize_performance(status, g_model, latent_dim, n_samples=25):
     # generate images
     X, _ = generate_fake_samples(g_model, latent_dim, n_samples)
     # normalize pixel values to the range [0,1]
-    X = (X - X.min()) / (X.max() - X.min())
+    # X = (X - X.min()) / (X.max() - X.min())
     # plot real images
     square = int(np.sqrt(n_samples))
     for i in range(n_samples):

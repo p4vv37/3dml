@@ -13,7 +13,7 @@ def main(runs=1, gpus=1):
     # number of growth phases, e.g. 6 == [4, 8, 16, 32, 64, 128]
     n_blocks = 7
     # size of the latent space
-    latent_dim = 32
+    latent_dim = 128
     # define models
     d_models = define_discriminator(n_blocks, gpus=gpus)
     # define models
