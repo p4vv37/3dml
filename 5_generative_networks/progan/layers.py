@@ -119,6 +119,8 @@ class EqualizedConv2D(Conv2D):
         return super(EqualizedConv2D, self).build(input_shape)
 
     def call(self, inputs):
+        return super(EqualizedConv2D, self).call(inputs)
+        # --- disabled rest equalized learning rate for now, does not work as expected.
         outputs = backend.conv2d(
             inputs,
             self.kernel*self.scale,
