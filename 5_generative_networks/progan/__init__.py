@@ -7,7 +7,7 @@ from .model import define_discriminator, define_generator, define_composite
 from .train import train
 
 
-def main(runs=1, gpus=1, dataset_name=None, n_epochs=None, n_batch=None):
+def main(runs=1, gpus=1, dataset_name=None, n_epochs=None, n_batch=None, learning_rate=None):
     print(F"-------------\n\n\nGPU:{tf.test.is_gpu_available(cuda_only=True)}\n\n\n-------------")
     print(F"Num GPUs: {gpus}")
 
@@ -37,6 +37,8 @@ def main(runs=1, gpus=1, dataset_name=None, n_epochs=None, n_batch=None):
         PARAMETERS.n_epochs = n_epochs
     if n_batch is not None:
         PARAMETERS.n_batch = n_batch
+    if learning_rate is not None:
+        PARAMETERS.learning_rate = learning_rate
     for r in range(runs):
         train(g_models, d_models, gan_models, data_dir, latent_dim,
               PARAMETERS.n_epochs, PARAMETERS.n_epochs, PARAMETERS.n_batch)
