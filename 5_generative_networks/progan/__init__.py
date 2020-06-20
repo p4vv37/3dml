@@ -7,7 +7,7 @@ from .model import define_discriminator, define_generator, define_composite
 from .train import train
 
 
-def main(runs=1, gpus=1, dataset_name=None, n_batch=None):
+def main(runs=1, gpus=1, dataset_name=None, n_epochs=None, n_batch=None):
     print(F"-------------\n\n\nGPU:{tf.test.is_gpu_available(cuda_only=True)}\n\n\n-------------")
     print(F"Num GPUs: {gpus}")
 
@@ -33,6 +33,8 @@ def main(runs=1, gpus=1, dataset_name=None, n_batch=None):
     else:
         raise ValueError(F"Unknown dataset_name {dataset_name}")
 
+    if n_epochs is not None:
+        PARAMETERS.n_epochs = n_epochs
     if n_batch is not None:
         PARAMETERS.n_batch = n_batch
     for r in range(runs):
