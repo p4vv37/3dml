@@ -11,6 +11,10 @@ def deprocess(x):
     return (x + 1) / 2.0
 
 
+def load_models():
+    pass
+
+
 # generate samples and save as a plot and save the model
 def summarize_performance(status, g_model, latent_dim, n_samples=25, save_models=True):
     # devise name

@@ -7,7 +7,7 @@ from .model import define_discriminator, define_generator, define_composite
 from .train import train
 
 
-def main(runs=1, gpus=1, dataset_name=None, n_epochs=None, n_batch=None, learning_rate=None):
+def main(runs=1, gpus=1, dataset_name=None, n_epochs=None, n_batch=None, learning_rate=None, load_models=False):
     print(F"-------------\n\n\nGPU:{tf.test.is_gpu_available(cuda_only=True)}\n\n\n-------------")
     print(F"Num GPUs: {gpus}")
 
@@ -15,13 +15,17 @@ def main(runs=1, gpus=1, dataset_name=None, n_epochs=None, n_batch=None, learnin
     n_blocks = 7
     # size of the latent space
     latent_dim = 128
-    # define models
-    d_models = define_discriminator(n_blocks, gpus=gpus)
-    # define models
-    g_models = define_generator(latent_dim, n_blocks, gpus=gpus)
-    # define composite models
-    gan_models = define_composite(d_models, g_models, gpus=gpus)
-    # load image data
+    if not load_models:
+        # define models
+        d_models = define_discriminator(n_blocks, gpus=gpus)
+        # define models
+        g_models = define_generator(latent_dim, n_blocks, gpus=gpus)
+        # define composite models
+        gan_models = define_composite(d_models, g_models, gpus=gpus)
+        # load image data
+    else:
+        d_models, g_models, gan_models = load_models()
+
     if dataset_name is None:
         data_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "all_age_faces_dataset")
     elif dataset_name == "af":
