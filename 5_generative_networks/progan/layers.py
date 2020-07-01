@@ -109,9 +109,9 @@ class WeightedSum(Add):
 
 
 class EqualizedConv2D(Conv2D):
-    def __init__(self, filters, kernel, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         self.scale = 1.0
-        super(EqualizedConv2D, self).__init__(filters, kernel, *args, **kwargs)
+        super(EqualizedConv2D, self).__init__(*args, **kwargs)
 
     def build(self, input_shape):
         fan_in = np.prod(input_shape[1:-1])

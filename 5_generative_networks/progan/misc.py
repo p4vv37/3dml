@@ -33,7 +33,7 @@ def summarize_performance(status, g_model, latent_dim, n_samples=25, save_models
         img = np.clip(img, 0, 1)
         pyplot.imshow(img)
     # save plot to file
-    filename1 = 'plot_%s.png' % (name)
+    filename1 = 'plot_%s.jpg' % (name)
     pyplot.savefig(filename1)
     pyplot.close()
     if save_models:
@@ -85,12 +85,10 @@ def show_images(generated_images, suffix=""):
     cols = n_images // rows
 
     plt.figure(figsize=(cols, rows))
-    for i in range(n_images):
-        img = deprocess(generated_images[i])
-        plt.subplot(rows, cols, i + 1)
-        plt.imshow(img, cmap='gray')
-        plt.xticks([])
-        plt.yticks([])
-    plt.tight_layout()
-    plt.savefig(F'prev_{suffix}.png')
+    _, axs = plt.subplots(rows, cols)
+    axs = axs.flatten()
+    for im, ax in zip(generated_images, axs):
+        img = deprocess(im)
+        ax.imshow(img, cmap='gray')
+    plt.savefig(F'prev_{suffix}.jpg')
     plt.show()

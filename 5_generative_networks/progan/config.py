@@ -5,7 +5,7 @@ class PARAMETERS(object):
     # n_epochs = [512, 1024, 2048, 5000, 5000, 5000, 5000]  # For AF faces, ap at 800k, like in the paper
     n_epochs = [1, 2, 4, 4, 4, 4, 4]  # For faces, ap at 800k, like in the paper
     # n_epochs = [1, 1, 1, 1, 1, 1, 1]
-    learning_rate = 0.001
+    learning_rate = 0.0001
     adam_beta1 = 0.0
     adam_beta2 = 0.99
     adam_epsilon = 1e-8

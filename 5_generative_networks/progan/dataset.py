@@ -11,10 +11,12 @@ def load_dataset(data_dir, target_size, batch_size=32, validation_split=0.0):
                                                 batch_size=batch_size,
                                                 subset='training',
                                                 shuffle=True,
-                                                target_size=(target_size, target_size))
+                                                target_size=(target_size, target_size),
+                                                interpolation="lanczos")
     validation_data = datagen.flow_from_directory(data_dir,
                                                   batch_size=batch_size,
                                                   subset='validation',
                                                   shuffle=True,
-                                                  target_size=(target_size, target_size))
+                                                  target_size=(target_size, target_size),
+                                                  interpolation="lanczos")
     return training_data, validation_data

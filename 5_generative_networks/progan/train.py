@@ -39,7 +39,10 @@ def train_epochs(g_model, d_model, gan_model, dataset, n_epochs, n_batch, latent
         if time.time() - t0 > 30:
             # save preview of images every 30 s.
             t0 = time.time()
-            summarize_performance('fresh_batch_preview', g_model, latent_dim, save_models=False)
+            try:
+                summarize_performance('fresh_batch_preview', g_model, latent_dim, save_models=False)
+            except:
+                pass
     print("")
 
 
@@ -53,10 +56,16 @@ def train(g_models, d_models, gan_models, dataset_dir, latent_dim, e_norm, e_fad
     print('Scaled Data', gen_shape)
     # train normal or straight-through models
     train_epochs(g_normal, d_normal, gan_normal, dataset, e_norm[0], n_batch[0], latent_dim)
-    summarize_performance('tuned', g_normal, latent_dim)
+    try:
+        summarize_performance('tuned', g_normal, latent_dim)
+    except:
+        pass
 
     latent_for_prev = generate_latent_points(latent_dim, 4)
+    print("fake:")
     show_images(g_normal.predict(latent_for_prev), suffix=0)
+    print("real:")
+    show_images(dataset.next()[0][:4], suffix="real".format(0))
 
     # process each level of growth
     for i in range(1, len(g_models)):
@@ -74,4 +83,11 @@ def train(g_models, d_models, gan_models, dataset_dir, latent_dim, e_norm, e_fad
         # train normal or straight-through models
         train_epochs(g_normal, d_normal, gan_normal, dataset, e_norm[i], n_batch[i], latent_dim)
         summarize_performance('tuned', g_normal, latent_dim)
+        print("fake:")
         show_images(g_normal.predict(latent_for_prev), suffix=i)
+        print("real:")
+        try:
+            dataset.reset()
+            show_images(dataset.next()[0][:4], suffix="real".format(i))
+        except ValueError:
+            pass
